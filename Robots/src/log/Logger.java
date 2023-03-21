@@ -1,10 +1,13 @@
 package log;
 
+import log.model.LogLevel;
+import log.model.LogDelegator;
+
 public final class Logger
 {
-    private static final LogWindowSource defaultLogSource;
+    private static final LogDelegator defaultLogSource;
     static {
-        defaultLogSource = new LogWindowSource(100);
+        defaultLogSource = new LogDelegator(100);
     }
 
     private Logger()
@@ -21,7 +24,7 @@ public final class Logger
         defaultLogSource.append(LogLevel.Error, strMessage);
     }
 
-    public static LogWindowSource getDefaultLogSource()
+    public static LogDelegator getDefaultLogSource()
     {
         return defaultLogSource;
     }
