@@ -1,4 +1,4 @@
-package game.view;
+package view;
 
 import java.awt.BorderLayout;
 
@@ -7,19 +7,19 @@ import javax.swing.JPanel;
 
 public class GameWindow extends JInternalFrame
 {
-    private final GameVisualizer visualizer;
-    public GameWindow(GameVisualizer visualizer)
+    private final GameView view;
+    public GameWindow(GameView view)
     {
         super("Игровое поле", true, true, true, true);
-        this.visualizer = visualizer;
+        this.view = view;
         //visualizer = new GameVisualizer();
         JPanel panel = new JPanel(new BorderLayout());
-        panel.add(this.visualizer, BorderLayout.CENTER);
+        panel.add(this.view, BorderLayout.CENTER);
         getContentPane().add(panel);
         pack();
     }
 
-    public GameVisualizer getGameView() {
-        return this.visualizer;
+    public GameView getGameView() {
+        return this.view;
     }
 }

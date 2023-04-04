@@ -1,10 +1,13 @@
-package game.model;
+package view.draw;
+
+import model.Robot;
+import model.Target;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 
-public class TagretDrawer extends Drawer {
-    public void drawTarget(Graphics2D g, Target target)
+public class TagretDrawer extends Drawer<Target> {
+    public void draw(Target target, Graphics2D g)
     {
         AffineTransform t = AffineTransform.getRotateInstance(0, 0, 0);
         g.setTransform(t);
@@ -12,5 +15,8 @@ public class TagretDrawer extends Drawer {
         fillOval(g, target.getX(), target.getY(), 5, 5);
         g.setColor(Color.BLACK);
         drawOval(g, target.getX(), target.getY(), 5, 5);
+    }
+    public Class<model.Target> getDrawingClass() {
+        return Target.class;
     }
 }

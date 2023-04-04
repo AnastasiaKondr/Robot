@@ -1,9 +1,8 @@
-import game.model.GameModel;
-import game.model.GameVisualModel;
-import game.view.GameVisualizer;
-import game.view.GameWindow;
-import game.view.GameVisualizer;
-import game.view.MainApplicationFrame;
+import model.GameModel;
+import viewmodel.GameViewModel;
+import view.GameView;
+import view.GameWindow;
+import view.MainApplicationFrame;
 
 import java.awt.Frame;
 
@@ -15,9 +14,10 @@ public class RobotsProgram
     public static void main(String[] args) {
 
         GameModel gameModel = new GameModel();
-        GameVisualizer gameView = new GameVisualizer(gameModel);
+        GameView gameView = new GameView(gameModel);
         GameWindow gameWindow = new GameWindow(gameView);
-        GameVisualModel viewModel = new GameVisualModel(gameModel, gameWindow);
+        GameViewModel viewModel = new GameViewModel(gameModel, gameWindow);
+        //viewModel.startGame(10);
 
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());

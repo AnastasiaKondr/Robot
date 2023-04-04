@@ -1,12 +1,11 @@
-package game.view;
-import game.model.GameVisualModel;
-import game.view.MainApplicationFrame;
+package view;
+import view.GameWindow;
+import viewmodel.GameViewModel;
 
 import log.Logger;
 import log.view.LogWindow;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.Dimension;
 import java.awt.Toolkit;
@@ -16,7 +15,7 @@ public class MainApplicationFrame extends JFrame
 {
     private final JDesktopPane desktopPane = new JDesktopPane();
 
-    public MainApplicationFrame(GameVisualModel gameVisualModel) {
+    public MainApplicationFrame(GameViewModel gameVisualModel) {
         //Make the big window be indented 50 pixels from each edge
         //of the screen.
         int inset = 50;

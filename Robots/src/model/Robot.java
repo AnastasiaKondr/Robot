@@ -1,35 +1,42 @@
-package game.model;
+package model;
 
 import java.awt.*;
 
-public class GameModel {
+public class Robot implements Entity {
     private Robot robot;
     private Target target;
     private Dimension dimension;
+    private double positionX = 100;
+    private double positionY = 100;
 
-    public GameModel() {
-        this.robot = new Robot();
-        this.target = new Target();
-    }
+    public static final double maxVelocity = 0.1;
+    public static final double maxAngularVelocity = 0.001;
 
-    public void setTargetPosition(Point p) {
-        target.setX(p.x);
-        target.setY(p.y);
-    }
-    protected Point getTargetPosition() {
-        return new Point(target.getX(), target.getY());
-    }
-    public void setDimension(Dimension dimension) {
-        this.dimension = dimension;
-    }
-    public Dimension getDimension() {
-        return this.dimension;
+    private volatile double robotDirection = 0;
+
+
+    public double getPositionX() {
+        return positionX;
     }
 
-    private static double distance(double x1, double y1, double x2, double y2) {
-        double diffX = x1 - x2;
-        double diffY = y1 - y2;
-        return Math.sqrt(diffX * diffX + diffY * diffY);
+    public void setPositionX(double positionX) {
+        this.positionX = positionX;
+    }
+
+    public double getPositionY() {
+        return positionY;
+    }
+
+    public void setPositionY(double positionY) {
+        this.positionY = positionY;
+    }
+
+    public double getRobotDirection() {
+        return robotDirection;
+    }
+
+    public void setRobotDirection(double robotDirection) {
+        this.robotDirection = robotDirection;
     }
 
     private static double angleTo(double fromX, double fromY, double toX, double toY) {
@@ -37,6 +44,12 @@ public class GameModel {
         double diffY = toY - fromY;
 
         return asNormalizedRadians(Math.atan2(diffY, diffX));
+    }
+
+    private static double distance(double x1, double y1, double x2, double y2) {
+        double diffX = x1 - x2;
+        double diffY = y1 - y2;
+        return Math.sqrt(diffX * diffX + diffY * diffY);
     }
 
     private static double asNormalizedRadians(double angle) {
@@ -70,6 +83,14 @@ public class GameModel {
         return value;
     }
 
+ /*   public Target getTarget() {
+        return target;
+    }
+
+    public void setTarget(Point point) {
+        this.target.setTargetPosition(point);
+    }*/
+
     private void moveRobot(double velocity, double angularVelocity, double duration) {
         velocity = applyLimits(velocity, 0, Robot.maxVelocity);
         angularVelocity = applyLimits(angularVelocity, -Robot.maxAngularVelocity, Robot.maxAngularVelocity);
@@ -90,33 +111,23 @@ public class GameModel {
         double newDirection = asNormalizedRadians(robot.getRobotDirection() + angularVelocity * duration);
         robot.setRobotDirection(newDirection);
     }
-
-    public void updateModel() {
-        double distance = distance(target.getX(), target.getY(),
-                robot.getPositionX(), robot.getPositionY());
+    @Override
+    public void update() {
+        double distance = distance(target.getX(), target.getY(), getPositionX(),getPositionY());
         if (distance < 0.5) {
             return;
         }
-        double velocity = Robot.maxVelocity;
-        double angleToTarget = angleTo(robot.getPositionX(), robot.getPositionY(),
+        double velocity = maxVelocity;
+        double angleToTarget = angleTo(getPositionX(), getPositionY(),
                 target.getX(), target.getY());
         double angularVelocity = 0;
-        if (angleToTarget > robot.getRobotDirection()) {
-            angularVelocity = Robot.maxAngularVelocity;
+        if (angleToTarget > getRobotDirection()) {
+            angularVelocity = maxAngularVelocity;
         }
-        if (angleToTarget < robot.getRobotDirection()) {
-            angularVelocity = -Robot.maxAngularVelocity;
+        if (angleToTarget < getRobotDirection()) {
+            angularVelocity = -maxAngularVelocity;
         }
 
-        moveRobot(velocity, angularVelocity, 10);
+        moveRobot(velocity, angularVelocity, 1);
     }
-
-    public Robot getRobot() {
-        return robot;
-    }
-
-    public Target getTarget() {
-        return target;
-    }
-
 }

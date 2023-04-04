@@ -1,6 +1,8 @@
-package game.model;
+package model;
 
-public class Target {
+import java.awt.*;
+
+public class Target implements Entity{
     private volatile int x;
     private volatile int y;
 
@@ -26,5 +28,17 @@ public class Target {
 
     public int getY() {
         return y;
+    }
+
+    public void setTargetPosition(Point p) {
+        setX(p.x);
+        setY(p.y);
+    }
+    protected Point getTargetPosition() {
+        return new Point(getX(), getY());
+    }
+    @Override
+    public void update() {
+
     }
 }
