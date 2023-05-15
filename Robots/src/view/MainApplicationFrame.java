@@ -1,9 +1,8 @@
 package view;
-import view.GameWindow;
 import viewmodel.GameViewModel;
 
 import log.Logger;
-import log.view.LogWindow;
+import log.LogWindow;
 
 import javax.swing.*;
 import java.awt.event.ActionListener;

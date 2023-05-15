@@ -3,13 +3,15 @@ package model;
 import java.awt.*;
 
 public class GameModel {
-    private Robot robot;
-    private Target target;
+    GameState gameState;
     private Dimension dimension;
 
     public GameModel() {
-        this.robot = new Robot();
-        this.target = new Target();
+        gameState = new GameState();
+    }
+    public GameState getGameState(){return gameState;}
+    public void change(Point p){
+        gameState.changeTarget(p);
     }
 
     /*
@@ -94,34 +96,16 @@ public class GameModel {
     */
 
     public void updateModel() {
-        /*double distance = distance(target.getX(), target.getY(),
-                positions.getPositionX(), positions.getPositionY());
-        if (distance < 0.5) {
-            return;
-        }
-        double velocity = Positions.maxVelocity;
-        double angleToTarget = angleTo(positions.getPositionX(), positions.getPositionY(),
-                target.getX(), target.getY());
-        double angularVelocity = 0;
-        if (angleToTarget > positions.getRobotDirection()) {
-            angularVelocity = Positions.maxAngularVelocity;
-        }
-        if (angleToTarget < positions.getRobotDirection()) {
-            angularVelocity = -Positions.maxAngularVelocity;
-        }
-
-        moveRobot(velocity, angularVelocity, 1);*/
-        robot.update();
-        target.update();
+        gameState.update();
     }
 
 
     public Robot getRobot() {
-        return robot;
+        return gameState.getRobot();
     }
 
     public Target getTarget() {
-        return target;
+        return gameState.getTarget();
     }
 
 }

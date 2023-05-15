@@ -1,8 +1,5 @@
 package log;
 
-import log.model.LogLevel;
-import log.model.LogDelegator;
-
 public final class Logger
 {
     private static final LogDelegator defaultLogSource;

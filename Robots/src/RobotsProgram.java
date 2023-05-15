@@ -1,3 +1,4 @@
+import model.EntityStateProvider;
 import model.GameModel;
 import viewmodel.GameViewModel;
 import view.GameView;
@@ -14,10 +15,9 @@ public class RobotsProgram
     public static void main(String[] args) {
 
         GameModel gameModel = new GameModel();
-        GameView gameView = new GameView(gameModel);
-        GameWindow gameWindow = new GameWindow(gameView);
-        GameViewModel viewModel = new GameViewModel(gameModel, gameWindow);
-        //viewModel.startGame(10);
+        EntityStateProvider provider = new EntityStateProvider(gameModel.getGameState());
+        GameView gameView = new GameView(provider);
+        GameViewModel viewModel = new GameViewModel(gameModel, gameView, provider);
 
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());

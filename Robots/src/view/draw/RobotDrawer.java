@@ -10,7 +10,7 @@ public class RobotDrawer extends Drawer<Robot> {
         int robotCenterX = (int) Math.round(robot.getPositionX());
         int robotCenterY = (int) Math.round(robot.getPositionY());
 
-        AffineTransform t = AffineTransform.getRotateInstance(robot.getRobotDirection(), robotCenterX, robotCenterY);
+        AffineTransform t = AffineTransform.getRotateInstance(robot.getDirection(), robotCenterX, robotCenterY);
         g.setTransform(t);
         g.setColor(Color.GREEN);
         fillOval(g, robotCenterX, robotCenterY, 30, 10);

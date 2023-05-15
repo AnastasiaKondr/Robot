@@ -3,42 +3,32 @@ package model;
 import java.awt.*;
 
 public class Robot implements Entity {
-    private Robot robot;
-    private Target target;
-    private Dimension dimension;
     private double positionX = 100;
     private double positionY = 100;
+    private Target target;
 
-    public static final double maxVelocity = 0.1;
+    public Robot(Target target){
+        this.target = target;
+    }
+
+    private double velocity;
+    public static final double maxVelocity = 0.05;
     public static final double maxAngularVelocity = 0.001;
-
+    private double duration = 10.0;
     private volatile double robotDirection = 0;
-
 
     public double getPositionX() {
         return positionX;
     }
 
-    public void setPositionX(double positionX) {
-        this.positionX = positionX;
-    }
-
     public double getPositionY() {
         return positionY;
     }
-
-    public void setPositionY(double positionY) {
-        this.positionY = positionY;
-    }
-
-    public double getRobotDirection() {
+    public double getDirection() {
         return robotDirection;
     }
 
-    public void setRobotDirection(double robotDirection) {
-        this.robotDirection = robotDirection;
-    }
-
+/*
     private static double angleTo(double fromX, double fromY, double toX, double toY) {
         double diffX = toX - fromX;
         double diffY = toY - fromY;
@@ -83,7 +73,7 @@ public class Robot implements Entity {
         return value;
     }
 
- /*   public Target getTarget() {
+    public Target getTarget() {
         return target;
     }
 
@@ -91,43 +81,56 @@ public class Robot implements Entity {
         this.target.setTargetPosition(point);
     }*/
 
-    private void moveRobot(double velocity, double angularVelocity, double duration) {
-        velocity = applyLimits(velocity, 0, Robot.maxVelocity);
-        angularVelocity = applyLimits(angularVelocity, -Robot.maxAngularVelocity, Robot.maxAngularVelocity);
-        double newX = robot.getPositionX() + velocity / angularVelocity *
-                (Math.sin(robot.getRobotDirection() + angularVelocity * duration) -
-                        Math.sin(robot.getRobotDirection()));
+    private void moveRobot(double angularVelocity) {
+        velocity = Math.applyLimits(maxVelocity, 0, maxVelocity);
+        angularVelocity = Math.applyLimits(angularVelocity, -maxAngularVelocity, maxAngularVelocity);
+        double newX = positionX + velocity / angularVelocity *
+                (java.lang.Math.sin(robotDirection  + angularVelocity * duration) -
+                        java.lang.Math.sin(robotDirection));
         if (!Double.isFinite(newX)) {
-            newX = robot.getPositionX() + velocity * duration * Math.cos(robot.getRobotDirection());
+            newX = positionX + velocity * duration * java.lang.Math.cos(robotDirection);
         }
-        double newY = robot.getPositionY() - velocity / angularVelocity *
-                (Math.cos(robot.getRobotDirection() + angularVelocity * duration) -
-                        Math.cos(robot.getRobotDirection()));
+        double newY = positionY - velocity / angularVelocity *
+                (java.lang.Math.cos(robotDirection  + angularVelocity * duration) -
+                        java.lang.Math.cos(robotDirection));
         if (!Double.isFinite(newY)) {
-            newY = robot.getPositionY() + velocity * duration * Math.sin(robot.getRobotDirection());
+            newY = positionY + velocity * duration * java.lang.Math.sin(robotDirection);
         }
-        robot.setPositionX(normalizedPositionX(newX));
-        robot.setPositionY(normalizedPositionY(newY));
-        double newDirection = asNormalizedRadians(robot.getRobotDirection() + angularVelocity * duration);
-        robot.setRobotDirection(newDirection);
+        positionX = newX;
+        positionY = newY;
+        double newDirection = Math.asNormalizedRadians(robotDirection + angularVelocity * duration);
+        robotDirection = newDirection;
+        if (positionX < 0) {newDirection = -540; positionX = 10;}
+        else if (positionY > 400) {newDirection = -8; positionY = 390;}
+        else if (positionX > 500) {newDirection = 8; positionX = 395;}
+        else if (positionY < 0) {newDirection = 8; positionY = 10;}
+        else newDirection = Math.asNormalizedRadians(robotDirection + angularVelocity * duration);
+        robotDirection = newDirection;
     }
+
     @Override
     public void update() {
-        double distance = distance(target.getX(), target.getY(), getPositionX(),getPositionY());
-        if (distance < 0.5) {
+        double distance = Math.distance(target.getX(), target.getY(),
+                positionX, positionY);
+        if (distance < 0.5){
             return;
         }
-        double velocity = maxVelocity;
-        double angleToTarget = angleTo(getPositionX(), getPositionY(),
+        double angleToTarget = Math.angleTo(positionX, positionY,
                 target.getX(), target.getY());
         double angularVelocity = 0;
-        if (angleToTarget > getRobotDirection()) {
-            angularVelocity = maxAngularVelocity;
+        if (java.lang.Math.abs(robotDirection - angleToTarget) < 10e-7) {
+            angularVelocity = robotDirection;
+        } else if (robotDirection >= java.lang.Math.PI) {
+            if (robotDirection - java.lang.Math.PI < angleToTarget && angleToTarget < robotDirection)
+                angularVelocity = -Robot.maxAngularVelocity;
+            else
+                angularVelocity = Robot.maxAngularVelocity;
+        } else {
+            if (robotDirection < angleToTarget && angleToTarget < robotDirection + java.lang.Math.PI)
+                angularVelocity = Robot.maxAngularVelocity;
+            else
+                angularVelocity = -Robot.maxAngularVelocity;
         }
-        if (angleToTarget < getRobotDirection()) {
-            angularVelocity = -maxAngularVelocity;
-        }
-
-        moveRobot(velocity, angularVelocity, 1);
+        moveRobot(angularVelocity);
     }
 }
