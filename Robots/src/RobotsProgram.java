@@ -17,7 +17,7 @@ public class RobotsProgram
         GameModel gameModel = new GameModel();
         EntityStateProvider provider = new EntityStateProvider(gameModel.getGameState());
         GameView gameView = new GameView(provider);
-        GameViewModel viewModel = new GameViewModel(gameModel, gameView, provider);
+        GameViewModel viewModel = new GameViewModel(gameModel, gameView);
 
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());

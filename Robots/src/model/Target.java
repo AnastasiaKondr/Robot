@@ -37,6 +37,7 @@ public class Target implements Entity{
     protected Point getTargetPosition() {
         return new Point(getX(), getY());
     }
+
     @Override
     public void update() {
 

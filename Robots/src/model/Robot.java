@@ -12,8 +12,9 @@ public class Robot implements Entity {
     }
 
     private double velocity;
-    public static final double maxVelocity = 0.05;
+    public static final double maxVelocity = 0.1;
     public static final double maxAngularVelocity = 0.001;
+    private static final double MAX_ANGLE_CHANGE = 0.1;
     private double duration = 10.0;
     private volatile double robotDirection = 0;
 
@@ -27,60 +28,6 @@ public class Robot implements Entity {
     public double getDirection() {
         return robotDirection;
     }
-
-/*
-    private static double angleTo(double fromX, double fromY, double toX, double toY) {
-        double diffX = toX - fromX;
-        double diffY = toY - fromY;
-
-        return asNormalizedRadians(Math.atan2(diffY, diffX));
-    }
-
-    private static double distance(double x1, double y1, double x2, double y2) {
-        double diffX = x1 - x2;
-        double diffY = y1 - y2;
-        return Math.sqrt(diffX * diffX + diffY * diffY);
-    }
-
-    private static double asNormalizedRadians(double angle) {
-        while (angle < 0) {
-            angle += 2 * Math.PI;
-        }
-        while (angle >= 2 * Math.PI) {
-            angle -= 2 * Math.PI;
-        }
-        return angle;
-    }
-    private double normalizedPositionX(double x) {
-        if (x < 0)
-            return 0;
-        if (x > dimension.height)
-            return dimension.height;
-        return x;
-    }
-    private double normalizedPositionY(double y) {
-        if (y < 0)
-            return 0;
-        if (y > dimension.width)
-            return dimension.width;
-        return y;
-    }
-    private static double applyLimits(double value, double min, double max) {
-        if (value < min)
-            return min;
-        if (value > max)
-            return max;
-        return value;
-    }
-
-    public Target getTarget() {
-        return target;
-    }
-
-    public void setTarget(Point point) {
-        this.target.setTargetPosition(point);
-    }*/
-
     private void moveRobot(double angularVelocity) {
         velocity = Math.applyLimits(maxVelocity, 0, maxVelocity);
         angularVelocity = Math.applyLimits(angularVelocity, -maxAngularVelocity, maxAngularVelocity);
@@ -117,10 +64,17 @@ public class Robot implements Entity {
         }
         double angleToTarget = Math.angleTo(positionX, positionY,
                 target.getX(), target.getY());
+        double angleDiff = Math.asNormalizedRadians(angleToTarget - robotDirection);
         double angularVelocity = 0;
         if (java.lang.Math.abs(robotDirection - angleToTarget) < 10e-7) {
             angularVelocity = robotDirection;
-        } else if (robotDirection >= java.lang.Math.PI) {
+        } else {
+            double maxAngleChange = MAX_ANGLE_CHANGE * duration;
+            double sign = java.lang.Math.signum(angleDiff);
+            double absAngleChange = java.lang.Math.min(java.lang.Math.abs(angleDiff), maxAngleChange);
+            angularVelocity = sign * absAngleChange / duration;
+        }
+            /*} else if (robotDirection >= java.lang.Math.PI) {
             if (robotDirection - java.lang.Math.PI < angleToTarget && angleToTarget < robotDirection)
                 angularVelocity = -Robot.maxAngularVelocity;
             else
@@ -130,7 +84,7 @@ public class Robot implements Entity {
                 angularVelocity = Robot.maxAngularVelocity;
             else
                 angularVelocity = -Robot.maxAngularVelocity;
-        }
+        }*/
         moveRobot(angularVelocity);
     }
 }
